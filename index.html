@@ -834,12 +834,18 @@ function checkPin(){
 <!-- ==================== RECORD TAB ==================== -->
 <div id="tab-record" style="display: none;">
   <div class="rec-wrap">
-    <div class="rec-intro" style="display:flex;align-items:flex-start;gap:12px">
-      <span class="cb-bot-avatar-wrap" style="flex-shrink:0;width:48px;height:48px"><img class="cb-bot-avatar takenobi-img" src="" style="width:100%;height:100%"></span>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px">
+      <span class="cb-bot-avatar-wrap" style="flex-shrink:0;width:44px;height:44px;margin-top:4px"><img class="cb-bot-avatar takenobi-img" src=""></span>
       <div>
-        <strong>📸 ねぇ、まず今の姿勢を写真に撮ってみない？</strong><br>
-        ストレッチの後にもう一度撮ると、自分の変化が目に見えてわかるんだ。<br>
-        「こんなに変わるんだ！」って、きっとびっくりするよ🎋<br>ぼくがちゃんと記録しておくからね！
+        <div style="font-size:.65rem;font-weight:700;color:var(--accent);margin-bottom:4px">タケノビ君</div>
+        <div class="cb-msg bot" style="max-width:100%;animation:none;margin:0;font-size:.8rem;line-height:1.7">
+          📸 ねぇ、まず今の姿勢を写真に撮ってみない？<br>
+          ストレッチの後にもう一度撮ると、自分の変化が目に見えてわかるんだ。
+        </div>
+        <div class="cb-msg bot" style="max-width:100%;animation:none;margin:6px 0 0;font-size:.8rem;line-height:1.7">
+          「こんなに変わるんだ！」って、きっとびっくりするよ🎋<br>
+          ぼくがちゃんと記録しておくからね！
+        </div>
       </div>
     </div>
     <div class="rec-section-title">新しい記録を追加 <span>📸</span></div>
@@ -912,7 +918,7 @@ function checkPin(){
     <div class="cam-mode-card" onclick="camSelectMode('self')">
       <div class="cam-mode-icon">🤳</div>
       <div class="cam-mode-name">セルフ撮影</div>
-      <div class="cam-mode-desc">タケラックに置いて3秒後に自動撮影</div>
+      <div class="cam-mode-desc">タケラックに置いて10秒後に自動撮影</div>
     </div>
   </div>
   <!-- Camera View (hidden until mode selected) -->
@@ -3006,10 +3012,10 @@ function camSwitchFacing(){
 
 function camTakeWithTimer(){
   if(camState.mode === 'self'){
-    // Self mode: always 3 second countdown
+    // Self mode: 10 second countdown
     var badge = document.getElementById('camTimer');
     badge.style.display = 'block';
-    var count = 3;
+    var count = 10;
     badge.textContent = count;
     // Disable shutter during countdown
     document.getElementById('camShutterBtn').style.pointerEvents = 'none';
