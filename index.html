@@ -834,9 +834,13 @@ function checkPin(){
 <!-- ==================== RECORD TAB ==================== -->
 <div id="tab-record" style="display: none;">
   <div class="rec-wrap">
-    <div class="rec-intro">
-      📷 <strong>姿勢ビフォーアフター記録</strong><br>
-      ビフォーとアフターの写真を撮影・登録して、タケストレッチ®の成果を視覚化しましょう。
+    <div class="rec-intro" style="display:flex;align-items:flex-start;gap:12px">
+      <span class="cb-bot-avatar-wrap" style="flex-shrink:0;width:48px;height:48px"><img class="cb-bot-avatar takenobi-img" src="" style="width:100%;height:100%"></span>
+      <div>
+        <strong>📸 ねぇ、まず今の姿勢を写真に撮ってみない？</strong><br>
+        ストレッチの後にもう一度撮ると、自分の変化が目に見えてわかるんだ。<br>
+        「こんなに変わるんだ！」って、きっとびっくりするよ🎋<br>ぼくがちゃんと記録しておくからね！
+      </div>
     </div>
     <div class="rec-section-title">新しい記録を追加 <span>📸</span></div>
     <div class="rec-upload-grid">
@@ -2217,12 +2221,8 @@ function startChatGreeting(){
   var lines=empathy.split('\n').filter(function(l){return l.trim()!=='';});
   addBotMsgSequence(lines, function(){
     setTimeout(function(){
-      addBotMsgSequence([
-        '📸 ねぇ、まず今の姿勢を写真に撮ってみない？ストレッチの後にもう一度撮ると、自分の変化が目に見えてわかるんだ',
-        '「こんなに変わるんだ！」って、きっとびっくりするよ🎋 ぼくがちゃんと記録しておくからね！'
-      ], function(){
-        renderQuickBtns([{label:'📸 今の姿勢を撮影する',value:'__take_before__'},{label:'⏭️ スキップする',value:'__skip_photo__'}]);
-      });
+      addBotMsg('さて、今日はどこがつらい？🎋\nぼくがぴったりのストレッチ見つけてあげるね。\n下のボタンから選んでもいいし、自由に教えてね！');
+      renderQuickBtns(CB_QUICK_OPTIONS);
     }, 800);
   });
 }
