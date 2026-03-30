@@ -2925,7 +2925,7 @@ function openCamCapture(target){
 function camSelectMode(mode){
   camState.mode = mode;
   if(mode === 'self'){
-    camState.timerSec = 3;
+    camState.timerSec = 10;
     camState.facingMode = 'environment';
   } else {
     camState.timerSec = 0;
@@ -2934,7 +2934,7 @@ function camSelectMode(mode){
   document.getElementById('camVideoWrap').style.display = 'flex';
   document.getElementById('camControls').style.display = 'flex';
   if(mode === 'self'){
-    document.getElementById('camGuideText').textContent = 'タケラックに置いてシャッターを押してください（3秒後に撮影）';
+    document.getElementById('camGuideText').textContent = 'タケラックに置いてシャッターを押してください（10秒後に撮影）';
   } else {
     document.getElementById('camGuideText').textContent = '全身が枠内に入るように立ってください';
   }
