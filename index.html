@@ -628,12 +628,71 @@ footer strong{color:var(--accent)}
 .act-week-label{font-size:.55rem;color:var(--text-muted);font-weight:700}
 .act-week-count{font-size:.58rem;color:var(--accent);font-weight:800}
 
+.pin-gate{position:fixed;inset:0;background:linear-gradient(135deg,#1a2616,#263a1e,#1a2616);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+.pin-gate.hidden{display:none}
+.pin-box{background:var(--bg-card);border-radius:22px;padding:36px 28px;max-width:320px;width:90%;text-align:center;box-shadow:0 12px 48px rgba(0,0,0,.5);border:1px solid rgba(140,200,90,.2);color:var(--text-primary)}
+.pin-box h2{font-size:1.1rem;font-weight:800;margin-bottom:6px;color:var(--text-primary)}
+.pin-box p{font-size:.78rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.pin-icon{font-size:3rem;margin-bottom:14px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.2))}
+.pin-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.pin-inputs input{width:48px;height:56px;text-align:center;font-size:1.4rem;font-weight:800;border:2px solid var(--border);border-radius:12px;background:var(--glass);color:var(--text-primary);outline:none;font-family:inherit;transition:all .2s;-webkit-appearance:none}
+.pin-inputs input:focus{border-color:#8cc85a;box-shadow:0 0 0 3px rgba(140,200,90,.2)}
+.pin-inputs input.error{border-color:#e74c3c;animation:pinShake .4s ease}
+@keyframes pinShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.pin-enter{width:100%;padding:14px;background:linear-gradient(135deg,#6aad45,#8cc85a);border:none;border-radius:12px;color:#1a2616;font-size:.9rem;font-weight:800;cursor:pointer;letter-spacing:.04em;box-shadow:0 4px 16px rgba(140,200,90,.3);transition:all .2s}
+.pin-enter:hover{box-shadow:0 6px 24px rgba(140,200,90,.5)}
+.pin-enter:active{opacity:.85}
+.pin-error-msg{color:#e74c3c;font-size:.75rem;font-weight:700;margin-top:10px;display:none}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 </head>
 <body>
 
-<!-- パスワード保護 削除済み -->
+<!-- アクセスコード認証 -->
+<div class="pin-gate" id="pinGate">
+  <div class="pin-box">
+    <div class="pin-icon">🎋</div>
+    <h2>タケストレッチ® 動画ライブラリ</h2>
+    <p>アクセスコードを入力してください</p>
+    <div class="pin-inputs" id="pinInputs">
+      <input type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+      <input type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+      <input type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+      <input type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+    </div>
+    <button class="pin-enter" onclick="checkPin()">アクセスする</button>
+    <div class="pin-error-msg" id="pinError">コードが違います</div>
+  </div>
+</div>
+<script>
+(function(){
+  if(localStorage.getItem('ts_auth')==='ok'){document.getElementById('pinGate').classList.add('hidden');return;}
+  var inputs=document.querySelectorAll('#pinInputs input');
+  inputs.forEach(function(inp,i){
+    inp.addEventListener('input',function(){
+      if(inp.value.length===1&&i<inputs.length-1)inputs[i+1].focus();
+      if(inp.value.length===1&&i===inputs.length-1)checkPin();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&inp.value===''&&i>0){inputs[i-1].focus();inputs[i-1].value='';}
+    });
+  });
+  inputs[0].focus();
+})();
+function checkPin(){
+  var inputs=document.querySelectorAll('#pinInputs input');
+  var code='';inputs.forEach(function(i){code+=i.value;});
+  if(code==='1234'){
+    localStorage.setItem('ts_auth','ok');
+    document.getElementById('pinGate').classList.add('hidden');
+  }else{
+    inputs.forEach(function(i){i.classList.add('error');i.value='';});
+    document.getElementById('pinError').style.display='block';
+    inputs[0].focus();
+    setTimeout(function(){inputs.forEach(function(i){i.classList.remove('error');});},500);
+  }
+}
+</script>
 
 <header>
   <div class="hdr-row">
@@ -2919,19 +2978,12 @@ var _qrOldCodeSkip=(function(){
 })();
 
 function showQrCode(){
-  var baseUrl=window.location.href.replace(/[^/]*$/,'').replace('localhost','172.31.99.207').replace('127.0.0.1','172.31.99.207');
-  var shortUrl=baseUrl+'ts.html';
+  var publicUrl='https://yoshitsumori1978-a11y.github.io/takestretch-library/';
   var statusEl=document.getElementById('qrStatusMsg');
   var netInfoEl=document.getElementById('qrNetworkInfo');
-  if(window.location.href.indexOf('file://')===0){
-    statusEl.innerHTML='<b style="color:#e89a80">ローカルファイルモード</b><br>同じWi-Fiのスマホからアクセスするには、<br>PCでローカルサーバーを起動してください。';
-    netInfoEl.innerHTML='<b style="color:#8cc85a">方法:</b> コマンドプロンプトで<br><code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px">python -m http.server 8000</code><br>を実行し、表示されるIPアドレスでアクセス';
-  } else {
-    statusEl.innerHTML='このQRコードをスマホで読み取ると<br>動画ライブラリにアクセスできます';
-    netInfoEl.innerHTML='同じWi-Fiネットワーク内のスマホで<br>QRコードを読み取ってください';
-  }
-  document.getElementById('qrUrlText').textContent=shortUrl;
-  // Use qrcode-generator CDN library with short redirect URL
+  statusEl.innerHTML='このQRコードをスマホで読み取ると<br>動画ライブラリにアクセスできます';
+  netInfoEl.innerHTML='<b style="color:#8cc85a">Wi-Fi不要！</b> スマホの回線でもアクセスできます';
+  document.getElementById('qrUrlText').textContent=publicUrl;
   var qrContainer=document.getElementById('qrCanvas');
   qrContainer.style.display='none';
   var qrImgWrap=document.getElementById('qrImgWrap');
@@ -2943,7 +2995,7 @@ function showQrCode(){
   }
   try{
     var qr=qrcode(0,'M');
-    qr.addData(shortUrl);
+    qr.addData(publicUrl);
     qr.make();
     var size=qr.getModuleCount();
     var cell=6,mg=cell*2;
